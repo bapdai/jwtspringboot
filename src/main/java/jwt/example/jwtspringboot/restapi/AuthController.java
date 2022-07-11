@@ -2,6 +2,8 @@ package jwt.example.jwtspringboot.restapi;
 
 import jwt.example.jwtspringboot.dto.JwtResponse;
 import jwt.example.jwtspringboot.dto.LoginRequest;
+import jwt.example.jwtspringboot.dto.MessageResponse;
+import jwt.example.jwtspringboot.dto.SignupRequest;
 import jwt.example.jwtspringboot.repository.RoleRepository;
 import jwt.example.jwtspringboot.repository.UserRepository;
 import jwt.example.jwtspringboot.service.UserDetailsIpmpl;
@@ -60,6 +62,18 @@ public class AuthController {
                                                 userDetails.getUsername(),
                                                 userDetails.getEmail(),
                                                 roles));
+    }
 
+    @PostMapping("/signup")
+    public ResponseEntity<?> registerUser(@Validated @RequestBody SignupRequest signupRequest){
+        if (userRepository.existsByUsername(signupRequest.getUsername())){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Username is already taken!"));
+        }
+        if (userRepository.existsByEmail(signupRequest.getEmail())){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Email is already in use!"));
     }
 }
